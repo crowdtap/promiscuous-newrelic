@@ -19,7 +19,7 @@ DependencyDetection.defer do
         worker_type = type == 'publisher' ? "Publishers" : "Subscribers"
 
         perform_action_with_newrelic_trace(:class_name => type,
-                                           :category => "OtherTransaction/Promiscuous#{worker_type}") do
+                                           :category => "Promiscuous/#{worker_type}") do
           unit_of_work_without_rpm(type, &block)
         end
       end
