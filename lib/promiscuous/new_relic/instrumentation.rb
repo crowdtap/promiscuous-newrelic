@@ -21,7 +21,7 @@ DependencyDetection.defer do
 
         # We are not using the subscriber class name, because of polymorphism
         # We only want the parent class basically
-        perform_action_with_newrelic_trace(:name => name, :class_name => worker_type,
+        perform_action_with_newrelic_trace(:name => name, :class_name => worker_type, :force => true,
                                            :category => "OtherTransaction/Promiscuous") do
           unit_of_work_without_rpm(type, &block)
         end
