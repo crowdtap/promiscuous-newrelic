@@ -28,6 +28,23 @@ DependencyDetection.defer do
       end
     end
 
+    Promiscuous::Worker.module_eval do
+      class << self
+        alias_method :replicate_without_rpm, :replicate
+        alias_method :stop_without_rpm, :stop
+
+        def replicate(options={})
+          NewRelic::Agent.manual_start
+          replicate_without_rpm(options)
+        end
+
+        def stop
+          stop_without_rpm
+          NewRelic::Agent.shutdown
+        end
+      end
+    end
+
     NewRelic::Agent.logger.debug 'Using Promiscuous Instrumentation'
   end
 end
