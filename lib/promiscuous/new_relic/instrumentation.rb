@@ -31,15 +31,15 @@ DependencyDetection.defer do
     Promiscuous::Worker.module_eval do
       class << self
         alias_method :replicate_without_rpm, :replicate
-        alias_method :stop_without_rpm, :stop
+        alias_method :kill_without_rpm, :kill
 
         def replicate(options={})
           NewRelic::Agent.manual_start
           replicate_without_rpm(options)
         end
 
-        def stop
-          stop_without_rpm
+        def kill
+          kill_without_rpm
           NewRelic::Agent.shutdown
         end
       end
