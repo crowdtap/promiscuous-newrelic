@@ -8,7 +8,7 @@ DependencyDetection.defer do
   end
 
   executes do
-    Promiscuous::Common::Worker.module_eval do
+    Promiscuous::Subscriber::Worker.module_eval do
       include NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
       alias_method :unit_of_work_without_rpm, :unit_of_work
