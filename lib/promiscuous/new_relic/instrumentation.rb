@@ -4,7 +4,7 @@ DependencyDetection.defer do
   @name = :promiscuous
 
   depends_on do
-    defined?(Promiscuous::Common::Worker) and not NewRelic::Control.instance['disable_promiscuous']
+    defined?(Promiscuous::CLI) and not NewRelic::Control.instance['disable_promiscuous']
   end
 
   executes do
