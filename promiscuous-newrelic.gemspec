@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'newrelic_rpm'
   s.add_dependency 'activesupport'
-  s.add_dependency 'promiscuous', '>= 0.30.0'
+  s.add_dependency 'promiscuous', '>= 0.50.0'
 
   s.files        = Dir["lib/**/*"] + ['README.md']
   s.require_path = 'lib'
