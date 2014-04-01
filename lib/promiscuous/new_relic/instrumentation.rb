@@ -8,17 +8,24 @@ DependencyDetection.defer do
   end
 
   executes do
-    Promiscuous::Subscriber::Worker::Message.class_eval do
+    Promiscuous::Subscriber::MessageProcessor.class_eval do
       include NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
-      alias_method :unit_of_work_without_rpm, :unit_of_work
-      def unit_of_work(type, &block)
+      alias_method :execute_operation_without_rpm, :execute_operation
+      def execute_operation(operation)
         # We are not using the subscriber class name, because of polymorphism
         # We only want the parent class basically
-        perform_action_with_newrelic_trace(:name => type, :class_name => 'Subscriber', :force => true,
+        perform_action_with_newrelic_trace(:name => namespace_for_rpm(operation), :class_name => 'Subscriber', :force => true,
                                            :category => "OtherTransaction/Promiscuous") do
-          unit_of_work_without_rpm(type, &block)
+
+          execute_operation_without_rpm(operation)
         end
+      end
+
+      private
+
+      def namespace_for_rpm(operation)
+        "#{self.app}/#{operation.model.to_s.downcase}/#{operation.operation}"
       end
     end
 
