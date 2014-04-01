@@ -25,7 +25,7 @@ DependencyDetection.defer do
       private
 
       def namespace_for_rpm(operation)
-        "#{self.app}/#{operation.model.to_s.downcase}/#{operation.operation}"
+        "#{self.app}/#{operation.model.to_s}/#{operation.operation}"
       end
     end
 
