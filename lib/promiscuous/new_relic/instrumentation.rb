@@ -8,7 +8,7 @@ DependencyDetection.defer do
   end
 
   executes do
-    Promiscuous::Subscriber::MessageProcessor.class_eval do
+    Promiscuous::Subscriber::UnitOfWork.class_eval do
       include NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
       alias_method :execute_operation_without_rpm, :execute_operation
