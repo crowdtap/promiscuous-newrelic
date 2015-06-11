@@ -4,10 +4,6 @@ require 'promiscuous-newrelic'
 class InstrumentedKlass
   attr_accessor :method_calls
 
-  def app
-    'test_app'
-  end
-
   def initialize
     self.method_calls = 0
     @namespace = 'SuperCoolModel'
