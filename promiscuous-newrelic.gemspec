@@ -18,6 +18,9 @@ Gem::Specification.new do |s|
   s.add_dependency 'activesupport'
   s.add_dependency 'promiscuous', '>= 0.50.0'
 
+  s.add_development_dependency 'rspec', '~> 3.2'
+  s.add_development_dependency 'pry'
+
   s.files        = Dir["lib/**/*"] + ['README.md']
   s.require_path = 'lib'
   s.has_rdoc     = false

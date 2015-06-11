@@ -1,30 +1,3 @@
-require 'new_relic/agent/instrumentation/controller_instrumentation'
-
-module PromiscuousNewRelicInstrumentedClass
-  extend ActiveSupport::Concern
-  include NewRelic::Agent::Instrumentation::ControllerInstrumentation
-
-  module ClassMethods
-    def instrument(method_name)
-      alias_method "orig_#{method_name}", method_name
-
-      define_method method_name do |*args, &block|
-        perform_action_with_newrelic_trace(:name => namespace_for_rpm(operation), :class_name => 'Subscriber', :force => true,
-                                           :category => "OtherTransaction/Promiscuous") do
-          __send__("orig_#{method_name}", *args, &block)
-        end
-      end
-    end
-  end
-
-
-  included do
-    private
-    def namespace_for_rpm(operation)
-      "#{self.app}/#{operation.model.to_s}/#{operation.operation}"
-    end
-  end
-end
 
 DependencyDetection.defer do
   @name = :promiscuous
@@ -35,9 +8,10 @@ DependencyDetection.defer do
 
   executes do
     Promiscuous::Subscriber::UnitOfWork.class_eval do
-      include PromiscuousNewRelicInstrumentedClass
+      include PromiscuousNewRelicInstrumented
 
       instrument :execute_operation
+      newrelic_namespace { "#{self.app}/#{operation.model.to_s}/#{operation.operation}" }
     end
 
     Promiscuous::CLI.class_eval do
