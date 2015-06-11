@@ -2,7 +2,6 @@ require 'active_support'
 require 'promiscuous-newrelic'
 
 class InstrumentedKlass
-  include PromiscuousNewRelicInstrumented
   attr_accessor :method_calls
 
   def app
@@ -17,7 +16,10 @@ class InstrumentedKlass
   def foo
     self.method_calls += 1
   end
+end
 
+InstrumentedKlass.class_eval do
+  include PromiscuousNewRelicInstrumented
   instrument :foo
   newrelic_namespace { @namespace }
 end
