@@ -7,11 +7,20 @@ DependencyDetection.defer do
   end
 
   executes do
-    Promiscuous::Subscriber::UnitOfWork.class_eval do
-      include PromiscuousNewRelicInstrumented
+    if defined?(Promiscuous::BlackHole)
+      Promiscuous::Subscriber::UnitOfWork.class_eval do
+        include PromiscuousNewRelicInstrumented
 
-      instrument :execute_operation
-      newrelic_namespace { "#{self.app}/#{operation.model.to_s}/#{operation.operation}" }
+        instrument :process
+        newrelic_namespace { "Normcore2/#{message.base_type}/#{message.operation}" }
+      end
+    else
+      Promiscuous::Subscriber::UnitOfWork.class_eval do
+        include PromiscuousNewRelicInstrumented
+
+        instrument :execute_operation
+        newrelic_namespace { "#{self.app}/#{operation.model.to_s}/#{operation.operation}" }
+      end
     end
 
     Promiscuous::CLI.class_eval do
