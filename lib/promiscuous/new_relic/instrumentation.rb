@@ -12,7 +12,7 @@ DependencyDetection.defer do
         include PromiscuousNewRelicInstrumented
 
         instrument :process
-        newrelic_namespace { "Normcore2/#{message.base_type}/#{message.operation}" }
+        newrelic_namespace { "#{Promiscuous::Config.app}/#{message.base_type}/#{message.operation}" }
       end
     else
       Promiscuous::Subscriber::UnitOfWork.class_eval do
