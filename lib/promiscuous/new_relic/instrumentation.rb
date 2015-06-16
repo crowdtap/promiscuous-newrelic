@@ -1,4 +1,3 @@
-
 DependencyDetection.defer do
   @name = :promiscuous
 
@@ -8,7 +7,7 @@ DependencyDetection.defer do
 
   executes do
     if defined?(Promiscuous::BlackHole)
-      Promiscuous::Subscriber::UnitOfWork.class_eval do
+      Promiscuous::BlackHole::Operation.class_eval do
         include PromiscuousNewRelicInstrumented
 
         instrument :process
