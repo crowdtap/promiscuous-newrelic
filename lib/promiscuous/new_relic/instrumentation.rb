@@ -1,5 +1,3 @@
-require 'new_relic/agent/instrumentation/controller_instrumentation'
-
 DependencyDetection.defer do
   @name = :promiscuous
 
@@ -8,24 +6,19 @@ DependencyDetection.defer do
   end
 
   executes do
-    Promiscuous::Subscriber::UnitOfWork.class_eval do
-      include NewRelic::Agent::Instrumentation::ControllerInstrumentation
+    if defined?(Promiscuous::BlackHole)
+      Promiscuous::BlackHole::Operation.class_eval do
+        include PromiscuousNewRelicInstrumented
 
-      alias_method :execute_operation_without_rpm, :execute_operation
-      def execute_operation(operation)
-        # We are not using the subscriber class name, because of polymorphism
-        # We only want the parent class basically
-        perform_action_with_newrelic_trace(:name => namespace_for_rpm(operation), :class_name => 'Subscriber', :force => true,
-                                           :category => "OtherTransaction/Promiscuous") do
-
-          execute_operation_without_rpm(operation)
-        end
+        instrument :process
+        newrelic_namespace { "#{Promiscuous::Config.app}/#{message.base_type}/#{message.operation}" }
       end
+    else
+      Promiscuous::Subscriber::UnitOfWork.class_eval do
+        include PromiscuousNewRelicInstrumented
 
-      private
-
-      def namespace_for_rpm(operation)
-        "#{self.app}/#{operation.model.to_s}/#{operation.operation}"
+        instrument :execute_operation
+        newrelic_namespace { "#{self.app}/#{operation.model.to_s}/#{operation.operation}" }
       end
     end
 
